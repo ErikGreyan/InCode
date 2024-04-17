@@ -1,0 +1,493 @@
+openapi: 3.0.0
+info:
+  title: InCode
+  description: API documentation for InCode
+  version: 1.2.4
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
+
+servers:
+  - url: http://localhost:3001
+paths:
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      security:
+        - bearerAuth: []
+
+      tags:
+        - Auth
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+      requestBody:
+        description: User register data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John
+                email:
+                  type: string
+                  example: john.doe@example.com
+                password:
+                  type: string
+                  example: John!Doe!12
+              required:
+                - name
+                - email
+                - password
+      responses:
+        "201":
+          description: User successfully registered
+          content:
+            application/json:
+              example:
+                statusCode: 201
+                message: User successfully registered
+                value:
+                  id: "2374263472..."
+                status: "Success"
+        "400":
+          description: Something is wrong with the body
+          content:
+            application/json:
+              example:
+                statusCode: 400
+                message: Something is wrong with the body
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+  /api/auth/login:
+    post:
+      summary: Log in with an existing account
+      security:
+        - bearerAuth: []
+      tags:
+        - Auth
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+      requestBody:
+        description: User login data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: john.doe@example.com
+                password:
+                  type: string
+                  example: John!Doe!12
+
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: User successfully logged in
+          content:
+            application/json:
+              example:
+                statusCode: 200
+                value:
+                  tokens:
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI...
+                    refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI...
+                  payload:
+                    id: "66114d9aaea7b12f6ae4d826"
+                    name: "John Doe"
+                    email: "john.doe@example.com"
+                message: User successfully login
+                status: "Success"
+
+        "401":
+          description: User with email john.doe@example.com not found
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: User with email john.doe@example.com not found
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+  /api/auth/logout:
+    delete:
+      summary: Sign out of the logged in account
+      security:
+        - bearerAuth: []
+      tags:
+        - Auth
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+      responses:
+        "204":
+          description: User successfully logged out
+          content:
+            application/json:
+              example:
+                statusCode: 204
+                message: User successfully logged out
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+  /api/user/userid:
+    get:
+      summary: Find user
+      security:
+        - bearerAuth: []
+
+      tags:
+        - User
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+
+      responses:
+        "201":
+          description: User successfully find
+          content:
+            application/json:
+              example:
+                statusCode: 201
+                message: User successfully find
+                value:
+                  id: 2374263472...
+                status: "Success"
+        "400":
+          description: Something is wrong with the body
+          content:
+            application/json:
+              example:
+                statusCode: 400
+                message: Something is wrong with the body
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+  /api/user/userId:
+    patch:
+      summary: Updating user data
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+      requestBody:
+        description: Updating user data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: John
+                email:
+                  type: string
+                  example: john.doe@example.com
+                password:
+                  type: string
+                  example: John!Doe!12
+
+              required:
+                - name
+                - email
+                - password
+      responses:
+        "200":
+          description: User with id successfully update
+          content:
+            application/json:
+              example:
+                statusCode: 200
+                value:
+                  tokens:
+                    accessToken: eyJhbGciOiJIUzI1NiIsInR5cCI...
+                    refreshToken: eyJhbGciOiJIUzI1NiIsInR5cCI...
+                  payload:
+                    id: "66114d9aaea7b12f6ae4d826"
+                    name: "John Doe"
+                    email: "john.doe@example.com"
+                message: User with id successfully update
+                status: "Success"
+
+        "401":
+          description: User with email john.doe@example.com not found
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: User with email john.doe@example.com not found
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+  /api/user/delete:
+    delete:
+      summary: Post deletion
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+
+      responses:
+        "204":
+          description: Post deleted successfully
+          content:
+            application/json:
+              example:
+                statusCode: 204
+                message: Post deleted successfully
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+                
+  /api/post/create:
+    post:
+      summary: Post create
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+
+      responses:
+        "200":
+          description: Post successfully create
+          content:
+            application/json:
+              example:
+                statusCode: 200
+                value:
+                  post:
+                    id: "66114d9aaea7b12f6ae4d826"
+                    name: "John Doe"
+                    description: "ajfhadf..."
+                message: Post successfully create"
+                status: "Success"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+  /api/post/view:
+    get:
+      summary: Post views
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+
+      responses:
+        "401":
+          description: Post with id not found
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: Post with id not found
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+  /api/post/update:
+    put:
+      summary: Post update
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+      requestBody:
+        description: Updating post data
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                  example: 134857345...
+                name:
+                  type: string
+                  example: John
+                description:
+                  type: string
+                  example: sajdhajfhs...
+
+              required:
+                - id
+                - name
+                - description
+      responses:
+        "200":
+          description: Post with id successfully update
+          content:
+            application/json:
+              example:
+                statusCode: 200
+                value:
+                  payload:
+                    id: "66114d9aaea7b12f6ae4d826"
+                    name: "John Doe"
+                    description: "john.doe@example.com"
+                message: User with id successfully update
+                status: "Success"
+
+        "401":
+          description: User with id 66114d9aaea7b12f6ae4d826 not found
+          content:
+            application/json:
+              example:
+                statusCode: 401
+                message: User with id 66114d9aaea7b12f6ae4d826 not found
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
+
+
+  /api/post/delete:
+    delete:
+      summary: Post delete
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      parameters:
+        - name: X-platform
+          in: header
+          required: true
+          schema:
+            type: string
+            default: "web"
+
+      responses:
+        "200":
+          description: Post successfully delete
+          content:
+            application/json:
+              example:
+                statusCode: 200
+                value:
+                  null
+                message: Post successfully delete
+                status: "Success"
+
+        "500":
+          description: Internal Server Error
+          content:
+            application/json:
+              example:
+                statusCode: 500
+                message: Internal Server Error
